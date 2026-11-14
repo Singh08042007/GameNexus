@@ -1,0 +1,22 @@
+# Environment & Secrets
+.env
+.env.local
+
+# Compiled Java Output
+target/
+build/
+bin/
+out/
+*.class
+*.jar
+
+# Runtime Data Store
+data/*.json
+data/*.tmp
+
+# IDE & OS
+.idea/
+.hallmark/
+*.iml
+.DS_Store
+Thumbs.db

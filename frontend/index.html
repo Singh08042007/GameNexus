@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEXUS: Real-Time Multiplayer Gaming Hub</title>
+  <meta name="description" content="Server-authoritative multiplayer gaming hub in Java OOP featuring Tic-Tac-Toe, Connect Four, Gomoku, Quad-Tac-Toe, real-time room chat, and live tactical game analysis." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/nexus.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Top Navigation Bar -->
+    <header class="top-nav">
+      <div class="container top-nav-inner">
+        <a href="#landing" class="brand-lockup" id="nav-brand-link">
+          <span class="brand-mark" aria-hidden="true">NX</span>
+          <span>
+            <span class="brand-title">NEXUS</span>
+            <span class="brand-subtitle">Multiplayer Gaming Hub &amp; Live Analysis</span>
+          </span>
+        </a>
+
+        <nav class="nav-links" id="authenticated-nav" aria-label="Primary Navigation">
+          <button type="button" class="nav-tab is-active" data-nav="dashboard" id="tab-dashboard">
+            Lobby &amp; Games
+          </button>
+          <button type="button" class="nav-tab hidden" data-nav="arena" id="tab-arena">
+            Active Room
+          </button>
+          <button type="button" class="nav-tab" data-nav="history" id="tab-history">
+            Analysis &amp; Standings
+          </button>
+        </nav>
+
+        <div class="nav-status-cluster">
+          <div class="connection-pill" id="ws-status-pill" title="Real-Time WebSocket &amp; Backend Status">
+            <span class="status-dot" id="ws-status-dot"></span>
+            <span class="mono" id="ws-status-label">Syncing</span>
+          </div>
+
+          <div class="user-badge hidden" id="nav-user-badge">
+            <span id="nav-username">Player</span>
+            <span class="user-badge-record" id="nav-user-record">0W-0L</span>
+          </div>
+
+          <button type="button" class="btn btn-secondary btn-sm hidden" id="btn-logout">
+            Sign Out
+          </button>
+
+          <button type="button" class="btn btn-primary btn-sm" id="btn-nav-auth">
+            Sign In
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main View Container -->
+    <main class="main-content">
+      <div class="container">
+
+        <!-- 1. LANDING VIEW -->
+        <section id="view-landing" aria-labelledby="landing-heading">
+          <div class="hero-split">
+            <div>
+              <h1 class="hero-headline" id="landing-heading">
+                Multiplayer rooms, live chat, and game analysis.
+              </h1>
+              <p class="hero-lead">
+                Pick from four grid games, chat live, and inspect every move.
+              </p>
+
+              <div class="hero-cta-row">
+                <button type="button" class="btn btn-primary btn-lg" id="btn-hero-start">
+                  Enter Gaming Hub
+                </button>
+                <button type="button" class="btn btn-secondary btn-lg" id="btn-hero-login">
+                  Account Sign In
+                </button>
+              </div>
+
+              <div class="hero-telemetry-strip">
+                <div>
+                  <div class="telemetry-stat-value tabular-nums">4 Games</div>
+                  <div class="telemetry-stat-label">3×3, 4×4, 6×7 Drop &amp; 9×9</div>
+                </div>
+                <div>
+                  <div class="telemetry-stat-value tabular-nums">Live Chat</div>
+                  <div class="telemetry-stat-label">WebSocket Room Chatroom</div>
+                </div>
+                <div>
+                  <div class="telemetry-stat-value tabular-nums">Move AI</div>
+                  <div class="telemetry-stat-label">Accuracy &amp; Threat Radar</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="hero-board-preview" aria-label="Interactive Multi-Game Preview">
+              <div class="preview-header">
+                <div>
+                  <span style="font-size: var(--text-xs); color: var(--text-muted); display: block;">Live Room Telemetry</span>
+                  <strong style="font-family: var(--font-display); font-size: var(--text-sm);">Room #NX4820 · Tactical Arena</strong>
+                </div>
+                <span class="preview-room-tag">Analysis Ready</span>
+              </div>
+
+              <div class="preview-grid" role="presentation">
+                <div class="preview-cell is-x">X</div>
+                <div class="preview-cell is-o">O</div>
+                <div class="preview-cell is-x">X</div>
+                <div class="preview-cell"></div>
+                <div class="preview-cell is-x">X</div>
+                <div class="preview-cell is-o">O</div>
+                <div class="preview-cell is-o">O</div>
+                <div class="preview-cell"></div>
+                <div class="preview-cell is-x">X</div>
+              </div>
+
+              <div class="preview-game-pills">
+                <div class="preview-game-pill">
+                  <strong>Tic-Tac-Toe</strong>
+                  <span class="mono">3×3</span>
+                </div>
+                <div class="preview-game-pill">
+                  <strong>Connect Four</strong>
+                  <span class="mono">6×7</span>
+                </div>
+                <div class="preview-game-pill">
+                  <strong>Gomoku</strong>
+                  <span class="mono">9×9</span>
+                </div>
+                <div class="preview-game-pill">
+                  <strong>Quad-Tac-Toe</strong>
+                  <span class="mono">4×4</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="architecture-strip">
+            <div class="arch-item">
+              <h2 class="arch-title">4 Polymorphic Engines</h2>
+              <p class="arch-desc">
+                Java OOP hierarchy supporting 3×3, 4×4, 6×7 gravity drop, and 9×9 five-in-a-row boards.
+              </p>
+            </div>
+            <div class="arch-item">
+              <h2 class="arch-title">In-Room Live Chatroom</h2>
+              <p class="arch-desc">
+                Chat with your opponent during matches with instant WebSocket delivery and quick presets.
+              </p>
+            </div>
+            <div class="arch-item">
+              <h2 class="arch-title">Tactical Game Analyzer</h2>
+              <p class="arch-desc">
+                Scores every move for winning strikes, double-threat forks, defensive saves, and control share.
+              </p>
+            </div>
+            <div class="arch-item">
+              <h2 class="arch-title">Supabase Cloud Sync</h2>
+              <p class="arch-desc">
+                Persists player ratings, rooms, and match histories to Supabase PostgreSQL and local storage.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. AUTHENTICATION VIEW -->
+        <section id="view-auth" class="hidden" hidden aria-labelledby="auth-heading">
+          <div class="auth-wrapper">
+            <h1 id="auth-heading" style="font-size: var(--text-2xl); margin-bottom: var(--space-2);">
+              Player Identity &amp; Access
+            </h1>
+            <p style="font-size: var(--text-sm); margin-bottom: var(--space-6);">
+              Sign in or register to create multi-game rooms, chat live, and review match analysis.
+            </p>
+
+            <div class="auth-tabs" role="tablist">
+              <button type="button" class="auth-tab is-active" id="tab-auth-login" role="tab" aria-selected="true">
+                Sign In
+              </button>
+              <button type="button" class="auth-tab" id="tab-auth-register" role="tab" aria-selected="false">
+                Create Account
+              </button>
+            </div>
+
+            <div id="auth-error-box" class="form-feedback hidden" role="alert"></div>
+
+            <!-- Login Form -->
+            <form id="form-login" class="form-stack" novalidate>
+              <div class="field-group">
+                <label class="field-label" for="login-identifier">Email or Username</label>
+                <input
+                  class="field-input"
+                  type="text"
+                  id="login-identifier"
+                  name="identifier"
+                  placeholder="player@nexus.gg or username"
+                  autocomplete="username"
+                  required
+                />
+              </div>
+
+              <div class="field-group">
+                <label class="field-label" for="login-password">Password</label>
+                <input
+                  class="field-input"
+                  type="password"
+                  id="login-password"
+                  name="password"
+                  placeholder="Enter your password"
+                  autocomplete="current-password"
+                  required
+                />
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-lg" id="btn-submit-login">
+                Sign In to NEXUS
+              </button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="form-register" class="form-stack hidden" novalidate>
+              <div class="field-group">
+                <label class="field-label" for="reg-username">Player Callsign (Username)</label>
+                <input
+                  class="field-input"
+                  type="text"
+                  id="reg-username"
+                  name="username"
+                  placeholder="3-24 letters, numbers, or underscores"
+                  autocomplete="username"
+                  required
+                />
+              </div>
+
+              <div class="field-group">
+                <label class="field-label" for="reg-email">Email Address</label>
+                <input
+                  class="field-input"
+                  type="email"
+                  id="reg-email"
+                  name="email"
+                  placeholder="player@nexus.gg"
+                  autocomplete="email"
+                  required
+                />
+              </div>
+
+              <div class="field-group">
+                <label class="field-label" for="reg-password">Password (min. 6 characters)</label>
+                <input
+                  class="field-input"
+                  type="password"
+                  id="reg-password"
+                  name="password"
+                  placeholder="Create a strong password"
+                  autocomplete="new-password"
+                  required
+                />
+              </div>
+
+              <button type="submit" class="btn btn-primary btn-lg" id="btn-submit-register">
+                Create Player Account
+              </button>
+            </form>
+          </div>
+        </section>
+
+        <!-- 3. LOBBY & GAME HUB VIEW -->
+        <section id="view-dashboard" class="hidden" hidden aria-labelledby="dashboard-heading">
+          <div class="dashboard-header">
+            <div>
+              <h1 id="dashboard-heading" style="font-size: var(--text-3xl);">
+                Multiplayer Game Hub &amp; Room Lobby
+              </h1>
+              <p style="font-size: var(--text-sm);">
+                Pick a game below to launch a new room, or enter a 6-character Room Code to join an opponent.
+              </p>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-refresh-lobby">
+              Refresh Lobby
+            </button>
+          </div>
+
+          <!-- Game Picker Catalog -->
+          <div class="game-catalog-section">
+            <div class="section-header-bar">
+              <h2 style="font-size: var(--text-xl);">1. Select a Game Mode</h2>
+              <span class="mono" style="font-size: var(--text-xs); color: var(--accent-primary);" id="selected-game-indicator">
+                Selected: Tic-Tac-Toe (3×3 Grid)
+              </span>
+            </div>
+
+            <div class="game-selector-grid" id="game-selector-grid" role="radiogroup" aria-label="Game Mode Selection">
+              <button type="button" class="game-choice-card is-selected" data-game-type="TIC_TAC_TOE">
+                <div>
+                  <div class="game-choice-top">
+                    <span class="game-choice-title">Tic-Tac-Toe</span>
+                    <span class="game-grid-badge">3×3</span>
+                  </div>
+                  <p class="game-choice-desc" style="margin-top: var(--space-2);">
+                    Fast 3×3 tactical duel. Claim center control or build a corner fork to align 3 markers.
+                  </p>
+                </div>
+                <div class="game-choice-meta">
+                  <span>Win: 3-in-a-row</span>
+                  <span>2 Players</span>
+                </div>
+              </button>
+
+              <button type="button" class="game-choice-card" data-game-type="CONNECT_FOUR">
+                <div>
+                  <div class="game-choice-top">
+                    <span class="game-choice-title">Connect Four</span>
+                    <span class="game-grid-badge">6×7 Drop</span>
+                  </div>
+                  <p class="game-choice-desc" style="margin-top: var(--space-2);">
+                    Drop discs into a 7-column rack. Pieces fall to the lowest open row; connect 4 to win.
+                  </p>
+                </div>
+                <div class="game-choice-meta">
+                  <span>Win: 4-in-a-row</span>
+                  <span>Gravity Drop</span>
+                </div>
+              </button>
+
+              <button type="button" class="game-choice-card" data-game-type="GOMOKU">
+                <div>
+                  <div class="game-choice-top">
+                    <span class="game-choice-title">Gomoku</span>
+                    <span class="game-grid-badge">9×9 Board</span>
+                  </div>
+                  <p class="game-choice-desc" style="margin-top: var(--space-2);">
+                    Positional strategy on an 81-cell grid. Build intersecting lines and align 5 stones.
+                  </p>
+                </div>
+                <div class="game-choice-meta">
+                  <span>Win: 5-in-a-row</span>
+                  <span>Strategy</span>
+                </div>
+              </button>
+
+              <button type="button" class="game-choice-card" data-game-type="QUAD_TAC_TOE">
+                <div>
+                  <div class="game-choice-top">
+                    <span class="game-choice-title">Quad-Tac-Toe</span>
+                    <span class="game-grid-badge">4×4 Arena</span>
+                  </div>
+                  <p class="game-choice-desc" style="margin-top: var(--space-2);">
+                    Expanded 16-cell tactical arena. Control the central 2×2 core and align 4 markers.
+                  </p>
+                </div>
+                <div class="game-choice-meta">
+                  <span>Win: 4-in-a-row</span>
+                  <span>Extended</span>
+                </div>
+              </button>
+            </div>
+          </div>
+
+          <div class="dashboard-grid">
+            <!-- Left Column: Career Telemetry + Create / Join Controls -->
+            <div class="room-actions-split">
+              <div class="panel-surface">
+                <div class="panel-header">
+                  <h2 class="panel-title">2. Launch or Join a Room</h2>
+                  <span class="mono" style="font-size: var(--text-xs); color: var(--text-muted);" id="dashboard-user-id">
+                    Ready
+                  </span>
+                </div>
+
+                <!-- Create Room Form -->
+                <form id="form-create-room" class="form-stack" style="margin-bottom: var(--space-5);">
+                  <div class="field-group">
+                    <label class="field-label" for="input-room-game">Game Mode</label>
+                    <select class="field-input" id="input-room-game" name="gameType">
+                      <option value="TIC_TAC_TOE">Tic-Tac-Toe (3×3 Classic Grid, Align 3)</option>
+                      <option value="CONNECT_FOUR">Connect Four (6×7 Gravity Rack, Align 4)</option>
+                      <option value="GOMOKU">Gomoku (9×9 Strategy Board, Align 5)</option>
+                      <option value="QUAD_TAC_TOE">Quad-Tac-Toe (4×4 Extended Grid, Align 4)</option>
+                    </select>
+                  </div>
+
+                  <div class="field-group">
+                    <label class="field-label" for="input-room-name">Room Title</label>
+                    <div class="inline-input-row">
+                      <input
+                        type="text"
+                        class="field-input"
+                        id="input-room-name"
+                        placeholder="e.g. Championship Arena"
+                        maxlength="48"
+                      />
+                      <button type="submit" class="btn btn-primary" id="btn-create-room">
+                        Create Room
+                      </button>
+                    </div>
+                  </div>
+                </form>
+
+                <!-- Join By Room Code Form -->
+                <form id="form-join-code" class="field-group" style="padding-top: var(--space-4); border-top: 1px solid var(--border-subtle);">
+                  <label class="field-label" for="input-join-code">Have an Opponent’s 6-Character Room Code?</label>
+                  <div class="inline-input-row">
+                    <input
+                      type="text"
+                      class="field-input mono"
+                      id="input-join-code"
+                      placeholder="Enter code (e.g. NX74K9)"
+                      maxlength="10"
+                      required
+                    />
+                    <button type="submit" class="btn btn-secondary" id="btn-join-code">
+                      Join by Code
+                    </button>
+                  </div>
+                </form>
+              </div>
+
+              <div class="panel-surface">
+                <div class="panel-header">
+                  <h2 class="panel-title">Your Career Telemetry</h2>
+                  <span class="mono" style="font-size: var(--text-xs); color: var(--status-success);">Synced</span>
+                </div>
+
+                <div class="stats-row" style="margin-bottom: 0;">
+                  <div class="stat-box">
+                    <div class="stat-box-value" id="stat-wins">0</div>
+                    <div class="stat-box-label">Wins</div>
+                  </div>
+                  <div class="stat-box">
+                    <div class="stat-box-value" id="stat-losses">0</div>
+                    <div class="stat-box-label">Losses</div>
+                  </div>
+                  <div class="stat-box">
+                    <div class="stat-box-value" id="stat-draws">0</div>
+                    <div class="stat-box-label">Draws</div>
+                  </div>
+                  <div class="stat-box">
+                    <div class="stat-box-value" id="stat-winrate">0%</div>
+                    <div class="stat-box-label">Win Rate</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column: Live Open Rooms Directory -->
+            <div class="panel-surface">
+              <div class="panel-header">
+                <h2 class="panel-title">Active &amp; Open Multiplayer Rooms</h2>
+                <span class="mono" style="font-size: var(--text-xs); color: var(--text-muted);" id="rooms-count-badge">
+                  0 Rooms
+                </span>
+              </div>
+
+              <div class="room-list" id="open-rooms-list" aria-live="polite">
+                <div class="empty-state">
+                  No open rooms right now. Pick a game above and click Create Room to start a match!
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. ACTIVE MULTIPLAYER ROOM, CHATROOM & LIVE ANALYSIS VIEW -->
+        <section id="view-arena" class="hidden" hidden aria-labelledby="arena-room-title">
+          <div class="arena-top-bar">
+            <div class="arena-room-meta">
+              <div>
+                <div style="display: flex; align-items: center; gap: var(--space-2);">
+                  <span class="room-game-pill" id="arena-game-badge">Tic-Tac-Toe</span>
+                  <span class="mono" style="font-size: var(--text-xs); color: var(--text-muted);" id="arena-room-status-label">
+                    Waiting for Challenger
+                  </span>
+                </div>
+                <h1 id="arena-room-title" style="font-size: var(--text-xl); margin-top: 2px;">
+                  Arena Room
+                </h1>
+              </div>
+
+              <button
+                type="button"
+                class="room-code-copy-btn"
+                id="btn-copy-room-code"
+                title="Click to copy Room Code"
+              >
+                <span>Code:</span>
+                <span id="arena-room-code">------</span>
+                <span style="font-size: var(--text-xs); font-weight: 500;">(Copy)</span>
+              </button>
+            </div>
+
+            <div style="display: flex; gap: var(--space-3);">
+              <button type="button" class="btn btn-secondary btn-sm" id="btn-back-lobby">
+                Back to Lobby
+              </button>
+              <button type="button" class="btn btn-danger btn-sm" id="btn-leave-room">
+                Leave Room
+              </button>
+            </div>
+          </div>
+
+          <div class="arena-layout">
+            <!-- Left Column: Players Roster & Live Tactical Game Analysis -->
+            <div class="arena-left-col">
+              <div class="players-roster">
+                <!-- Player X Slot -->
+                <div class="player-slot-card" id="slot-player-x">
+                  <div class="player-slot-header">
+                    <span class="symbol-pill is-x">X</span>
+                    <span class="mono" style="font-size: var(--text-xs); color: var(--text-muted);" id="slot-x-badge">
+                      Host · Player X
+                    </span>
+                  </div>
+                  <div class="player-name" id="slot-x-name">Waiting…</div>
+                  <div class="player-submeta" id="slot-x-record">0W - 0L - 0D</div>
+                </div>
+
+                <!-- Player O Slot -->
+                <div class="player-slot-card" id="slot-player-o">
+                  <div class="player-slot-header">
+                    <span class="symbol-pill is-o">O</span>
+                    <span class="mono" style="font-size: var(--text-xs); color: var(--text-muted);" id="slot-o-badge">
+                      Challenger · Player O
+                    </span>
+                  </div>
+                  <div class="player-name" id="slot-o-name">Waiting for Challenger…</div>
+                  <div class="player-submeta" id="slot-o-record">Share room code to invite</div>
+                </div>
+              </div>
+
+              <!-- Live Tactical Game Analysis Panel -->
+              <div class="analysis-card" id="arena-analysis-card">
+                <div class="panel-header" style="margin-bottom: var(--space-3); padding-bottom: var(--space-2);">
+                  <h2 style="font-size: var(--text-base);">Live Game Analysis</h2>
+                  <span class="room-code-badge" id="analysis-opening-name">Awaiting Opening</span>
+                </div>
+
+                <!-- Board Control Dominance Bar -->
+                <div class="control-meter-wrap">
+                  <div class="control-meter-labels">
+                    <span style="color: var(--accent-primary);" id="analysis-share-x">X Control: 50%</span>
+                    <span style="color: var(--accent-secondary);" id="analysis-share-o">O Control: 50%</span>
+                  </div>
+                  <div class="control-meter-bar" role="img" aria-label="Board Control Balance">
+                    <div class="control-meter-fill-x" id="analysis-bar-x" style="width: 50%;"></div>
+                    <div class="control-meter-fill-o" id="analysis-bar-o" style="width: 50%;"></div>
+                  </div>
+                </div>
+
+                <!-- 4 Tactical Metrics -->
+                <div class="analysis-metrics-grid">
+                  <div class="analysis-mini-stat">
+                    <div class="analysis-mini-label">X Move Accuracy</div>
+                    <div class="analysis-mini-val" id="analysis-acc-x">100%</div>
+                  </div>
+                  <div class="analysis-mini-stat">
+                    <div class="analysis-mini-label">O Move Accuracy</div>
+                    <div class="analysis-mini-val" id="analysis-acc-o">100%</div>
+                  </div>
+                  <div class="analysis-mini-stat">
+                    <div class="analysis-mini-label">Winning Threats</div>
+                    <div class="analysis-mini-val" id="analysis-threats">X: 0 / O: 0</div>
+                  </div>
+                  <div class="analysis-mini-stat">
+                    <div class="analysis-mini-label">Defensive Saves</div>
+                    <div class="analysis-mini-val" id="analysis-blocks">X: 0 / O: 0</div>
+                  </div>
+                </div>
+
+                <div class="analysis-summary-box">
+                  <strong style="display: block; color: var(--text-primary); margin-bottom: 2px;" id="analysis-turning-point">
+                    No decisive tactical swing yet.
+                  </strong>
+                  <span id="analysis-summary-text">
+                    Make a move on the board to generate live move accuracy, threat radar, and positional telemetry.
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Center Column: Server-Authoritative Multi-Game Board Stage -->
+            <div class="board-stage">
+              <div class="turn-banner" id="turn-banner">
+                <span class="turn-banner-text" id="turn-banner-text">
+                  Waiting for second player to join…
+                </span>
+                <span class="mono" style="font-size: var(--text-xs); color: var(--text-secondary);" id="turn-counter-pill">
+                  Move 0
+                </span>
+              </div>
+
+              <!-- Connect Four Column Drop Buttons (Shown when gameType === CONNECT_FOUR) -->
+              <div class="connect-four-drop-row hidden" id="connect-four-drop-row" aria-label="Connect Four Column Controls"></div>
+
+              <!-- Dynamic Board Grid (3x3, 4x4, 6x7, or 9x9) -->
+              <div class="ttt-board" id="ttt-board" role="grid" aria-label="Multiplayer Game Board"></div>
+
+              <!-- Post-Match Outcome & Rematch Callout -->
+              <div class="match-result-callout hidden" id="match-result-callout" role="status" aria-live="polite">
+                <div>
+                  <h2 style="font-size: var(--text-lg);" id="match-result-headline">Match Complete</h2>
+                  <p style="font-size: var(--text-sm);" id="match-result-subtitle">Result recorded to leaderboard and analysis log.</p>
+                </div>
+                <div style="display: flex; gap: var(--space-2);">
+                  <button type="button" class="btn btn-primary" id="btn-rematch">
+                    Play Rematch
+                  </button>
+                  <button type="button" class="btn btn-secondary" id="btn-view-history">
+                    Full Analysis Report
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Column: Real-Time Room Chatroom & Annotated Move Log -->
+            <div class="arena-right-col">
+              <!-- Live Room Chatroom -->
+              <div class="chat-panel" id="room-chat-panel">
+                <div class="panel-header" style="margin-bottom: 0; padding-bottom: var(--space-2);">
+                  <h2 style="font-size: var(--text-base);">Live Room Chatroom</h2>
+                  <span class="mono" style="font-size: var(--text-xs); color: var(--status-success);">Real-Time</span>
+                </div>
+
+                <div class="chat-messages-stream" id="chat-messages-stream" aria-live="polite">
+                  <div class="empty-state" style="padding: var(--space-4);">
+                    Room chat initialized. Say hello to your opponent!
+                  </div>
+                </div>
+
+                <!-- Quick Tactical Presets -->
+                <div class="chat-Preset-bar" id="chat-preset-bar" aria-label="Quick Chat Messages">
+                  <button type="button" class="chat-preset-chip" data-chat-preset="Good luck, have fun!">Good luck!</button>
+                  <button type="button" class="chat-preset-chip" data-chat-preset="Nice move!">Nice move!</button>
+                  <button type="button" class="chat-preset-chip" data-chat-preset="Watch that fork!">Watch that fork!</button>
+                  <button type="button" class="chat-preset-chip" data-chat-preset="Great defensive block!">Great block!</button>
+                  <button type="button" class="chat-preset-chip" data-chat-preset="Up for a rematch?">Rematch?</button>
+                </div>
+
+                <form id="form-room-chat" class="chat-form">
+                  <label for="input-chat-message" class="sr-only">Chat Message</label>
+                  <input
+                    type="text"
+                    class="field-input"
+                    id="input-chat-message"
+                    placeholder="Message opponent in room…"
+                    maxlength="280"
+                    autocomplete="off"
+                  />
+                  <button type="submit" class="btn btn-primary btn-sm" id="btn-send-chat">
+                    Send
+                  </button>
+                </form>
+              </div>
+
+              <!-- Annotated Move-by-Move Evaluation Log -->
+              <div class="panel-surface" style="padding: var(--space-5);">
+                <div class="panel-header" style="margin-bottom: var(--space-3); padding-bottom: var(--space-2);">
+                  <h2 style="font-size: var(--text-base);">Move-by-Move Evaluation</h2>
+                  <span class="mono" style="font-size: var(--text-xs); color: var(--text-muted);" id="move-log-count">0 Moves</span>
+                </div>
+                <div class="move-log-list" id="move-log-list" aria-live="polite">
+                  <div class="empty-state" style="padding: var(--space-4);">
+                    No moves played yet.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. MATCH HISTORY, GAME ANALYSIS ARCHIVE & LEADERBOARD VIEW -->
+        <section id="view-history" class="hidden" hidden aria-labelledby="history-heading">
+          <div class="dashboard-header">
+            <div>
+              <h1 id="history-heading" style="font-size: var(--text-3xl);">
+                Match Analysis Reports &amp; Global Standings
+              </h1>
+              <p style="font-size: var(--text-sm);">
+                Review completed matches with opening classifications, move accuracy percentages, turning points, and rankings.
+              </p>
+            </div>
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-refresh-history">
+              Refresh Data
+            </button>
+          </div>
+
+          <div class="history-grid">
+            <div class="panel-surface">
+              <div class="panel-header">
+                <h2 class="panel-title">Recent Matches &amp; Post-Game Analysis</h2>
+                <span class="mono" style="font-size: var(--text-xs); color: var(--text-muted);">Server Verified</span>
+              </div>
+              <div class="history-table-wrap" id="match-history-list">
+                <div class="empty-state">No completed matches recorded yet.</div>
+              </div>
+            </div>
+
+            <div class="panel-surface">
+              <div class="panel-header">
+                <h2 class="panel-title">Top Players Leaderboard</h2>
+                <span class="mono" style="font-size: var(--text-xs); color: var(--accent-primary);">Ranked by Wins</span>
+              </div>
+              <div class="history-table-wrap" id="leaderboard-list">
+                <div class="empty-state">No ranked players yet.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+
+    <!-- Toast Notification Container -->
+    <div class="toast-region" id="toast-region" aria-live="polite"></div>
+  </div>
+
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>
