@@ -12,8 +12,8 @@
 | :-: | :--- | :--- | :--- | :--- |
 | 1 | **Deepinder Singh** | `247046` | Lead Backend Architect & Cloud Deployment | Java OOP Architecture (`NexusApplication`, `ApiController`), Polymorphic Multi-Game Engine (`GameEngine`, `AbstractBoardGame`, `GameEngineFactory`), Supabase Cloud Integration (`SupabaseClient`, `DataRepository`), Docker & Railway Production Deployment |
 | 2 | **Gourav Garg** | `2547061` | Game Engine & Tactical AI Analysis Engineer | Game Rules Implementation (`TicTacToeEngine`, `ConnectFourEngine`, `GomokuEngine`, `QuadTacToeEngine`), Live & Post-Game Tactical Analysis Engine (`GameAnalyzer`), Move Accuracy & Threat Telemetry |
-| 3 | **Harsh Dhiman** | — | Real-Time Networking & Room Systems Engineer | RFC 6455 WebSocket Hub (`WebSocketHub`, `WebSocketConnection`), Room Lifecycle & Matchmaking (`RoomService`, `GameService`), In-Room Live Chatroom (`ChatMessage`), Concurrency & Race-Condition Protection |
-| 4 | **Hitika** | — | Frontend UI/UX & Interactive Arena Designer | Architectural Daylight UI Theme (`tokens.css`, `base.css`, `nexus.css`), Multi-Game Dynamic Board Renderer (`index.html`, `app.js`), Real-Time WebSocket & REST Client Integration (`ws.js`, `api.js`), Automated Verification Suite |
+| 3 | **Harsh Dhiman** | `2547068` | Real-Time Networking & Room Systems Engineer | RFC 6455 WebSocket Hub (`WebSocketHub`, `WebSocketConnection`), Room Lifecycle & Matchmaking (`RoomService`, `GameService`), In-Room Live Chatroom (`ChatMessage`), Concurrency & Race-Condition Protection |
+| 4 | **Hitika** | `2547077` | Frontend UI/UX & Interactive Arena Designer | Architectural Daylight UI Theme (`tokens.css`, `base.css`, `nexus.css`), Multi-Game Dynamic Board Renderer (`index.html`, `app.js`), Real-Time WebSocket & REST Client Integration (`ws.js`, `api.js`), Automated Verification Suite |
 
 ---
 
@@ -32,12 +32,12 @@
   - **Quad-Tac-Toe** (`4×4` Extended Arena — Align 4)
 - Developed `GameAnalyzer.java` to evaluate move quality (`WINNING_STRIKE`, `DOUBLE_THREAT_FORK`, `CRITICAL_BLOCK`, `TACTICAL_THREAT`, `CENTER_CONTROL`, `POSITIONAL_PLAY`, `MISSED_DEFENSE`), player move accuracy percentages, opening classifications, and board control balance.
 
-### 3. Harsh Dhiman
+### 3. Harsh Dhiman (Roll No: `2547068`)
 - Implemented the custom zero-dependency **RFC 6455 WebSocket Server** (`WebSocketHub.java` & `WebSocketConnection.java`) supporting SHA-1 handshakes, frame masking/unmasking, ping/pong heartbeats, and room-scoped pub/sub broadcasting.
 - Built the **In-Room Live Chatroom** (`ChatMessage.java`, `SEND_CHAT` WebSocket event, `POST /api/rooms/chat`, and automated Arena Director system announcements).
 - Enforced thread-safe room synchronization (`synchronized` room locks and `ConcurrentHashMap` stores) to prevent simultaneous move race conditions.
 
-### 4. Hitika
+### 4. Hitika (Roll No: `2547077`)
 - Crafted the **Architectural Daylight Light-Themed UI** (`frontend/css/tokens.css`, `frontend/css/base.css`, `frontend/css/nexus.css`) and 3-column tactical arena layout.
 - Built the Vanilla ES6+ frontend controller (`frontend/js/app.js`, `frontend/js/api.js`, `frontend/js/ws.js`) with dynamic `3×3`, `4×4`, `6×7`, and `9×9` board rendering, Connect Four column drop controls, quick-chat preset chips, and live telemetry charts.
 - Contributed to the 29-test automated verification suite (`NexusTestSuite.java`).

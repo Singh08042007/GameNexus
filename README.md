@@ -21,8 +21,8 @@ Players can register or sign in, create or join 6-character room codes, choose f
 | :-: | :--- | :--- | :--- |
 | 1 | **Deepinder Singh** | `247046` | Lead Backend Architect, Supabase Cloud Integration & Railway Docker Deployment |
 | 2 | **Gourav Garg** | `2547061` | Multi-Game Engine Developer & Tactical Game Analysis (`GameAnalyzer`) |
-| 3 | **Harsh Dhiman** | — | RFC 6455 WebSocket Server, Matchmaking Rooms & Live Room Chatroom |
-| 4 | **Hitika** | — | Architectural Daylight Frontend UI/UX, Dynamic Board Renderer & Automated Testing |
+| 3 | **Harsh Dhiman** | `2547068` | RFC 6455 WebSocket Server, Matchmaking Rooms & Live Room Chatroom |
+| 4 | **Hitika** | `2547077` | Architectural Daylight Frontend UI/UX, Dynamic Board Renderer & Automated Testing |
 
 > See [`team details.md`](./team%20details.md) for a full module-by-module breakdown of each teammate's contributions.
 
